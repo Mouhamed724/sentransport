@@ -9,6 +9,22 @@ import Footer from "./Footer";
 function App() {
   const [recherche, setRecherche] = useState("");
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
+   const [nbRecherches, setNbRecherches] = useState(0);
+   function handleRecherche(value) {
+    setRecherche(value);
+    setNbRecherches(nbRecherches + 1);
+  }
+
+  function handleClickLigne(ligne) {
+    if (
+      ligneSelectionnee &&
+      ligneSelectionnee.id === ligne.id
+    ) {
+      setLigneSelectionnee(null);
+    } else {
+      setLigneSelectionnee(ligne);
+    }
+  }
 
   const lignes = [
   {
@@ -119,33 +135,30 @@ function App() {
       l.numero.includes(recherche)
   );
 
-  function handleClickLigne(ligne) {
-    if (
-      ligneSelectionnee &&
-      ligneSelectionnee.id === ligne.id
-    ) {
-      setLigneSelectionnee(null);
-    } else {
-      setLigneSelectionnee(ligne);
-    }
-  }
+  
 
   return (
     <div className="App">
       <Header />
 
       <main className="contenu">
-        <Recherche
-          valeur={recherche}
-          onChange={setRecherche}
-        />
-
+        <Recherche valeur={recherche} onChange={handleRecherche} />
+        <p className="compteur">
+  Vous avez effectué {nbRecherches} recherche(s)
+</p>
+        <button onClick={() => setRecherche("")}>
+  Effacer
+</button>
         <p className="resultat-recherche">
           {lignesFiltrees.length} ligne
           {lignesFiltrees.length > 1 ? "s" : ""} trouvee
           {lignesFiltrees.length > 1 ? "s" : ""}
         </p>
-
+        {lignesFiltrees.length === 0 && (
+  <p className="aucun-resultat">
+    Aucune ligne trouvée
+  </p>
+)}
         {lignesFiltrees.map((ligne) => (
           <LigneBus
             key={ligne.id}
